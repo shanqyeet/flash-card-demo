@@ -18,6 +18,12 @@ public interface Constants {
         public static final int MAX_CHALLENGE_COUNT_EASY_MEDIUM = 250;
         public static final int MAX_CHALLENGE_COUNT_EASY_HARD = 350;
 
+        // SECURITY
+        public static final String SECRET = "FlashCardJWTSecretKey";
+        public static final String TOKEN_PREFIX = "Bearer ";
+        public static final String HEADER_STRING = "Authorization";
+        public static final Long TOKEN_EXPIRY_TIME = Long.valueOf(3600);
+
 
     }
 

@@ -28,4 +28,7 @@ public class GameScoreEntity {
     @Enumerated(EnumType.STRING)
     private GameDifficulty.MultiplicationTableGame gameDifficulty;
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate(){ this.createdAt = LocalDateTime.now();}
 }

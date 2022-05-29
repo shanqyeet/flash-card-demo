@@ -1,8 +1,8 @@
 CREATE TABLE users (
     id uuid NOT NULL PRIMARY KEY,
     username varchar(256) NOT NULL,
+    password varchar(256) NOT NULL,
     avatar_url varchar(2045) NOT NULL,
-    birth_date DATE NOT NULL,
     created_at DATETIME NOT NULL
 );
 
