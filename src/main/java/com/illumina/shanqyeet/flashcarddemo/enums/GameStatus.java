@@ -16,5 +16,14 @@ public final class GameStatus {
         public String value(){
             return status;
         }
+
+        public static GameStatus.MultiplicationTableGame fromString(String status) {
+            for(GameStatus.MultiplicationTableGame gameStatus : GameStatus.MultiplicationTableGame.values()) {
+                if (gameStatus.name().equalsIgnoreCase(status)) {
+                    return gameStatus;
+                }
+            }
+            return null;
+        }
     }
 }

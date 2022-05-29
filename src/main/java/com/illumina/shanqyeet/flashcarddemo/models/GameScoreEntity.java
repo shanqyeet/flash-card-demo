@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -17,15 +15,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "game_scores")
-public class GameScore {
+public class GameScoreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long id;
-    private UUID userId;
+//    private UUID userId;
     private Integer score;
     private Integer penalty;
-    private LocalTime averageAnswerSpeed;
-    @Enumerated(value = EnumType.STRING)
-    private GameDifficulty difficulty;
+    @Column(name = "average_answer_time")
+    private Long averageAnswerTimeInMillis;
+    @Enumerated(EnumType.STRING)
+    private GameDifficulty.MultiplicationTableGame gameDifficulty;
     private LocalDateTime createdAt;
 }

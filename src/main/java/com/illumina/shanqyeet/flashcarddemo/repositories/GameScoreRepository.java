@@ -1,4 +1,9 @@
 package com.illumina.shanqyeet.flashcarddemo.repositories;
 
-public interface GameScoreRepository {
+import com.illumina.shanqyeet.flashcarddemo.models.GameScoreEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface GameScoreRepository extends JpaRepository<GameScoreEntity, Long> {
 }
