@@ -6,8 +6,10 @@ import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetNextChallengeRespo
 import com.illumina.shanqyeet.flashcarddemo.enums.ArithmeticOperators;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameStatus;
+import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.services.BaseService;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.JwtUserDetailsExtractor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,8 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
 
     @Override
     public GetNextChallengeResponse execute(GetNextChallengeRequest request) throws Exception {
-        String userId = request.getUserId();
+        UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
+        String userId = user.getId().toString();
         GameDifficulty.MathTableGame gameDifficulty = request.getGameDifficulty();
 
         try {
@@ -49,7 +52,7 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
                 });
 
         AbstractMap.SimpleEntry<Integer, Integer> generatedNumPair = generateNumberPairWithAppearanceFrequencyCheck(numPairFrequencyMap, userId, gameDifficulty.name());
-        Character chosenOperator = getRandomOperator(gameDifficulty);
+        Character chosenOperator = getRandomOperator(generatedNumPair.getValue(), gameDifficulty);
 
         return GetNextChallengeResponse.builder()
                 .firstNum(generatedNumPair.getKey())
@@ -88,14 +91,20 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
 
     }
 
-    private Character getRandomOperator(GameDifficulty.MathTableGame gameDifficulty ){
+    private Character getRandomOperator(Integer secondNum, GameDifficulty.MathTableGame gameDifficulty ){
         ArithmeticOperators[] possibleOperators = gameDifficulty.getOperators();
         int operatorSize = possibleOperators.length;
         int randomOperatorIdx = new Random()
                 .ints(0, operatorSize - 1)
                 .findFirst()
                 .getAsInt();
-        return possibleOperators[randomOperatorIdx].value();
+        Character possibleChar = possibleOperators[randomOperatorIdx].value();
+
+        //* Any number cannot be divided or modulus by zero
+        if(secondNum < 1 && (possibleChar.equals(DIVIDE_CHAR) || possibleChar.equals(MODULUS_CHAR))){
+            getRandomOperator(secondNum, gameDifficulty);
+        }
+        return possibleChar;
     }
 
     private AbstractMap.SimpleEntry<Integer, Integer> generateNumberPairWithAppearanceFrequencyCheck(

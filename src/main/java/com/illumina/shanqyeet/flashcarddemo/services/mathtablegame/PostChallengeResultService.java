@@ -3,8 +3,10 @@ package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeResultRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResultResponse;
+import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.services.BaseService;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.JwtUserDetailsExtractor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,8 @@ public class PostChallengeResultService implements BaseService<PostChallengeResu
 
     @Override
     public PostChallengeResultResponse execute(PostChallengeResultRequest request) throws Exception {
-        String userId = request.getUserId();
+        UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
+        String userId = user.getId().toString();
         GameScoreCacheObject gameScoreCache = Optional.ofNullable(gameCache.getGameScores(userId))
                 .orElse(new GameScoreCacheObject());
         Integer currentLatestScore = 0;

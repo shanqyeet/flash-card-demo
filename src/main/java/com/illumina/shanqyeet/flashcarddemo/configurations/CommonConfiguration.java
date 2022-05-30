@@ -16,4 +16,5 @@ public class CommonConfiguration {
 
     @Bean
     public Random randomNumberGenetator() {return new Random();}
+
 }

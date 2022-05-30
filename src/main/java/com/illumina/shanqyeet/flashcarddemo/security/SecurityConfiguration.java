@@ -58,30 +58,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().sameOrigin()
                 .and()
                 .authorizeHttpRequests((authz) -> authz
+                        .antMatchers("/scores/**").permitAll()
                         .antMatchers("/users/sessions/**").permitAll()
                         .antMatchers("/users/registrations/**").permitAll()
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
-
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.cors().and().csrf().disable()
-//                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .headers().frameOptions().sameOrigin()
-//                .and()
-//                .authorizeHttpRequests((authz) -> authz
-//                        .antMatchers("/users/sessions/**").permitAll()
-//                        .antMatchers("/users/registrations/**").permitAll()
-//                        .anyRequest().authenticated()
-//                );
-////                .httpBasic(withDefaults());
-//        return http.build();
-//    }
 }

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostChallengeResultRequest implements BaseRequest {
-    private String userId;
     private boolean isPassed;
     private Long answerTimeInMillis;
 }

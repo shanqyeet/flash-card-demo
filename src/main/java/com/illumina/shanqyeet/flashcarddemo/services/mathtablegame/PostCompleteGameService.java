@@ -1,11 +1,13 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
-import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostCompleteGameRequest;
+import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.models.GameScoreEntity;
+import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.repositories.GameScoreRepository;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.JwtUserDetailsExtractor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +24,10 @@ public class PostCompleteGameService {
     @Autowired
     private GameScoreRepository gameScoreRepository;
 
-    public void execute(PostCompleteGameRequest request){
-
+    public PostCompleteGameResponse execute(){
         try {
-            String userId = request.getUserId();
+            UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
+            String userId = user.getId().toString();
 
             GameScoreCacheObject gameScoreCache = gameCache.getGameScores(userId);
             GameDifficulty.MathTableGame gameDifficulty  = GameDifficulty.MathTableGame
@@ -46,6 +48,13 @@ public class PostCompleteGameService {
 
             gameScoreRepository.save(newGameScore);
             gameCache.clearCurrentGameData(userId);
+
+            Double rateOfCorrectAnswer = Double.valueOf(totalScore/(totalScore+totalPenalty));
+            return PostCompleteGameResponse.builder()
+                    .averageAnswerTime(averageAnswerTimeMillis)
+                    .correctAnswerRate(rateOfCorrectAnswer)
+                    .totalScore(totalScore)
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
