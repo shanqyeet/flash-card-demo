@@ -3,14 +3,14 @@ package com.illumina.shanqyeet.flashcarddemo.enums;
 import static com.illumina.shanqyeet.flashcarddemo.enums.ArithmeticOperators.*;
 
 public final class GameDifficulty {
-    public enum MultiplicationTableGame {
+    public enum MathTableGame {
         EASY(new ArithmeticOperators[]{MINUS, PLUS}),
         MEDIUM(new ArithmeticOperators[]{PRODUCT,DIVIDE}),
         HARD(new ArithmeticOperators[]{MINUS, PLUS, PRODUCT, DIVIDE, MODULUS});
 
         private ArithmeticOperators[] operators;
 
-        MultiplicationTableGame(ArithmeticOperators[] operators){
+        MathTableGame(ArithmeticOperators[] operators){
             this.operators = operators;
         }
 
@@ -25,8 +25,8 @@ public final class GameDifficulty {
             return HARD.name().equalsIgnoreCase(difficulty);
         }
 
-        public static MultiplicationTableGame fromString(String difficulty) {
-            for(MultiplicationTableGame gameDifficulty : MultiplicationTableGame.values()) {
+        public static GameDifficulty.MathTableGame fromString(String difficulty) {
+            for(MathTableGame gameDifficulty : MathTableGame.values()) {
                 if (gameDifficulty.name().equalsIgnoreCase(difficulty)) {
                     return gameDifficulty;
                 }

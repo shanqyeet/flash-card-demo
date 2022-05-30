@@ -49,18 +49,13 @@ public class MathTableGameController {
     public GetNextChallengeResponse retrieveNextChallenge(
             @PathVariable String userId,
             @RequestParam(name = "game-status", required = false) String gameStatus,
-            @RequestParam(name = "game-difficulty", required = false) String gameDifficulty){
-        log.info("############# IN CONTROLLER ##################");
-        log.info("GAME STATUS: ", gameStatus);
-        log.info("GAME DIFFICULTY: ", gameDifficulty);
-        log.info("GAME STATUS PARSED: ", GameDifficulty.MultiplicationTableGame.fromString(gameDifficulty));
-        log.info("GAME DIFFICULTY PARSED: ", GameStatus.MultiplicationTableGame.fromString(gameStatus));
+            @RequestParam(name = "game-difficulty", required = false) String gameDifficulty) throws Exception {
 
 
         GetNextChallengeRequest request = GetNextChallengeRequest.builder()
                 .userId(userId)
-                .gameDifficulty(GameDifficulty.MultiplicationTableGame.fromString(gameDifficulty))
-                .gameStatus(GameStatus.MultiplicationTableGame.fromString(gameStatus))
+                .gameDifficulty(GameDifficulty.MathTableGame.fromString(gameDifficulty))
+                .gameStatus(GameStatus.MathTableGame.fromString(gameStatus))
                 .build();
         return getNextChallengeService.execute(request);
     }
@@ -69,7 +64,7 @@ public class MathTableGameController {
     public PostChallengeResultResponse updateChallengeResult(
             @PathVariable String userId,
             @RequestBody ChallengeResultDto challengeResult
-    ){
+    ) throws Exception {
         PostChallengeResultRequest request = PostChallengeResultRequest.builder()
                 .userId(userId)
                 .isPassed(challengeResult.isChallengePassed())

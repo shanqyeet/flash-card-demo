@@ -3,25 +3,31 @@ package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.GetValidateOnGoingGameRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetValidateOnGoingGameResponse;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.GameStatus.CACHE_GAME_SESSION;
 
 @Service
 public class GetValidateOnGoingGameService {
 
-//    @Autowired
-//    private RedisTemplate redisTemplate;
+    @Autowired
+    private MathTableGameCache gameCache;
 
     public GetValidateOnGoingGameResponse execute(GetValidateOnGoingGameRequest request){
-        ConcurrentHashMap<String, GameScoreCacheObject> gameScoreMapCache = new ConcurrentHashMap<>();
-        GameScoreCacheObject gameScore = gameScoreMapCache.get(request.getUserId() + CACHE_GAME_SESSION);
-//        GameScoreCacheObject gameScoreCache = (GameScoreCacheObject) redisTemplate.opsForHash().get(request.getUserId(), CACHE_GAME_SESSION);
-        return Objects.isNull(gameScore)
-                ? GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.FALSE).build()
-                : GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.TRUE).build();
+        try {
+            GameScoreCacheObject gameScore = gameCache.getGameScores(request.getUserId());
+            if (Objects.nonNull(gameScore)) {
+                if (gameScore.getLatestPenalty() > 0 || gameScore.getLatestScore() > 0) {
+                    return GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.TRUE).build();
+                }
+            }
+            return  GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.FALSE).build();
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

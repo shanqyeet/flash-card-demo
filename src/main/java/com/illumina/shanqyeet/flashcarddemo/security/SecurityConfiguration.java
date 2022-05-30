@@ -1,6 +1,6 @@
 package com.illumina.shanqyeet.flashcarddemo.security;
 
-import com.illumina.shanqyeet.flashcarddemo.services.usersession.FlashCardUserDetailsService;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.UserDetailsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    private FlashCardUserDetailsService flashCardUserDetailsService;
+    private UserDetailsValidator flashCardUserDetailsService;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {return  new JwtAuthenticationFilter();}

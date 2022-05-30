@@ -1,4 +1,4 @@
-package com.illumina.shanqyeet.flashcarddemo.configurations;
+package com.illumina.shanqyeet.flashcarddemo.properties;
 
 
 import lombok.Getter;

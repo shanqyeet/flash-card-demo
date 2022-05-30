@@ -1,6 +1,6 @@
 package com.illumina.shanqyeet.flashcarddemo.security;
 
-import com.illumina.shanqyeet.flashcarddemo.services.usersession.FlashCardUserDetailsService;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.UserDetailsValidator;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,15 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
-import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.GameStatus.HEADER_STRING;
-import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.GameStatus.TOKEN_PREFIX;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.HEADER_STRING;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.TOKEN_PREFIX;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
     @Autowired
-    private FlashCardUserDetailsService flashCardUserDetailsService;
+    private UserDetailsValidator flashCardUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,

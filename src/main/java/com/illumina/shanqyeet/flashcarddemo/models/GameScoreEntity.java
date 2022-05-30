@@ -26,7 +26,7 @@ public class GameScoreEntity {
     @Column(name = "average_answer_time")
     private Long averageAnswerTimeInMillis;
     @Enumerated(EnumType.STRING)
-    private GameDifficulty.MultiplicationTableGame gameDifficulty;
+    private GameDifficulty.MathTableGame gameDifficulty;
     private LocalDateTime createdAt;
 
     @PrePersist

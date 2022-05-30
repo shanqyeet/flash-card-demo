@@ -1,15 +1,16 @@
 package com.illumina.shanqyeet.flashcarddemo.enums;
 
-import com.illumina.shanqyeet.flashcarddemo.utils.Constants;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.STATUS_IN_PROGRESS;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.STATUS_NEW;
 
 public final class GameStatus {
-    public enum MultiplicationTableGame {
-        NEW(Constants.GameStatus.NEW),
-        IN_PROGRESS(Constants.GameStatus.IN_PROGRESS);
+    public enum MathTableGame {
+        NEW(STATUS_NEW),
+        IN_PROGRESS(STATUS_IN_PROGRESS);
 
         private String status;
 
-        MultiplicationTableGame(String status){
+        MathTableGame(String status){
             this.status = status;
         }
 
@@ -17,8 +18,8 @@ public final class GameStatus {
             return status;
         }
 
-        public static GameStatus.MultiplicationTableGame fromString(String status) {
-            for(GameStatus.MultiplicationTableGame gameStatus : GameStatus.MultiplicationTableGame.values()) {
+        public static GameStatus.MathTableGame fromString(String status) {
+            for(GameStatus.MathTableGame gameStatus : GameStatus.MathTableGame.values()) {
                 if (gameStatus.name().equalsIgnoreCase(status)) {
                     return gameStatus;
                 }

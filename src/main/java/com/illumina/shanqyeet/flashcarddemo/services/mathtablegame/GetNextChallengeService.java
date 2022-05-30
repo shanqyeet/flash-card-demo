@@ -7,18 +7,14 @@ import com.illumina.shanqyeet.flashcarddemo.enums.ArithmeticOperators;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameStatus;
 import com.illumina.shanqyeet.flashcarddemo.services.BaseService;
+import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
-import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.GameStatus.*;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.*;
 import static java.util.Objects.isNull;
 
 @Slf4j
@@ -26,34 +22,33 @@ import static java.util.Objects.isNull;
 public class GetNextChallengeService implements BaseService<GetNextChallengeRequest, GetNextChallengeResponse> {
 
     @Autowired
-    private RedisTemplate redisTemplate;
-    private static Random randomNumGenerator;
+    private MathTableGameCache gameCache;
+
+    @Autowired
+    private Random randomNumGenerator;
 
     @Override
-    public GetNextChallengeResponse execute(GetNextChallengeRequest request) {
-        log.info("############ REQUEST ###############");
-        log.info(String.valueOf(request));
-        ConcurrentHashMap<String, GameScoreCacheObject> gameScoreMapCache = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, HashMap<String, Integer>> numPairFrequencyMapCache = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, String> gameDifficultyMapCache = new ConcurrentHashMap<>();
-
+    public GetNextChallengeResponse execute(GetNextChallengeRequest request) throws Exception {
         String userId = request.getUserId();
-        GameDifficulty.MultiplicationTableGame gameDifficulty = request.getGameDifficulty();
-        if(isNewGame(request)){
-            redisTemplate.opsForHash().put(userId, CACHE_GAME_SESSION, new GameScoreCacheObject());
-            redisTemplate.opsForHash().put(userId, CACHE_GAME_DIFFICULTY, gameDifficulty.toString());
-//            gameScoreMapCache.put(userId + CACHE_GAME_SESSION, new GameScoreCacheObject());
-//            gameDifficultyMapCache.put(userId + CACHE_GAME_DIFFICULTY, gameDifficulty.toString());
-        } else {
-            String cachedDifficulty = (String) redisTemplate.opsForHash().get(userId, CACHE_GAME_DIFFICULTY);
-//            String cachedDifficulty = gameDifficultyMapCache.get(userId + CACHE_GAME_DIFFICULTY);
-            gameDifficulty = GameDifficulty.MultiplicationTableGame.fromString(cachedDifficulty);
-        }
+        GameDifficulty.MathTableGame gameDifficulty = request.getGameDifficulty();
 
-//        HashMap<String, Integer> numPairFrequencyMap = (HashMap<String, Integer>) redisTemplate.opsForHash().get(userId, CACHE_NUM_PAIR_FREQUENCY);
-        HashMap<String, Integer> numPairFrequencyMap = Optional.ofNullable(numPairFrequencyMapCache.get(userId + CACHE_NUM_PAIR_FREQUENCY)).orElse(new HashMap<>());
+        try {
+            if(isNewGame(request)){
+                gameCache.putGameScores(userId, new GameScoreCacheObject());
+                gameCache.putGameDifficulty(userId, gameDifficulty.name());
+            } else {
+                String cachedDifficulty = gameCache.getGameDifficulty(userId);
+                gameDifficulty = GameDifficulty.MathTableGame.fromString(cachedDifficulty);
+            }
+
+                Map<String, Double> numPairFrequencyMap = Optional.ofNullable(gameCache.getNumPairFrequency(userId)).orElse(new HashMap<>());
+                log.info("NUM PAIR FREQUENCY MAP");
+                log.info(numPairFrequencyMap.toString());
+                numPairFrequencyMap.forEach((key, value) -> {
+                    log.info("[{} : {}]", key, value);
+                });
+
         AbstractMap.SimpleEntry<Integer, Integer> generatedNumPair = generateNumberPairWithAppearanceFrequencyCheck(numPairFrequencyMap, userId, gameDifficulty.name());
-
         Character chosenOperator = getRandomOperator(gameDifficulty);
 
         return GetNextChallengeResponse.builder()
@@ -62,57 +57,61 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
                 .operator(chosenOperator)
                 .result(calculateExpectedResult(generatedNumPair.getKey(), generatedNumPair.getValue(), chosenOperator))
                 .build();
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
-    private Integer calculateExpectedResult(Integer firstNum, Integer secondNum, Character operator){
+    private Integer calculateExpectedResult(Integer firstNum, Integer secondNum, Character operator) throws Exception {
         Integer result = 0;
         switch(operator) {
-            case '-':
+            case MINUS_CHAR:
                 result = firstNum - secondNum;
                 break;
-            case '+':
+            case PLUS_CHAR:
                 result = firstNum + secondNum;
                 break;
-
-            case '/':
+            case DIVIDE_CHAR:
                 result = firstNum / secondNum;
                 break;
-            case '*':
+            case MULTIPLY_CHAR:
                 result = firstNum * secondNum;
                 break;
-            case '%':
+            case MODULUS_CHAR:
                 result = firstNum % secondNum;
                 break;
-            default: result = null;
+            default:
+                throw new Exception("Non allowed arithmetic operator");
         }
         return result;
 
     }
 
-    private Character getRandomOperator(GameDifficulty.MultiplicationTableGame gameDifficulty ){
+    private Character getRandomOperator(GameDifficulty.MathTableGame gameDifficulty ){
         ArithmeticOperators[] possibleOperators = gameDifficulty.getOperators();
         int operatorSize = possibleOperators.length;
-        int randomOpereratorIdx = new Random()
+        int randomOperatorIdx = new Random()
                 .ints(0, operatorSize - 1)
                 .findFirst()
                 .getAsInt();
-        return possibleOperators[randomOpereratorIdx].value();
+        return possibleOperators[randomOperatorIdx].value();
     }
 
     private AbstractMap.SimpleEntry<Integer, Integer> generateNumberPairWithAppearanceFrequencyCheck(
-            HashMap<String, Integer> numPairFrequencyMap,
+            Map<String, Double> numPairFrequencyMap,
             String userId,
             String gameDifficulty
-    ){
+    ) throws Exception {
         Integer firstNum = generateRandomZeroToTwelve();
         Integer secondNum = generateRandomZeroToTwelve();
         String numPairCacheKey = "" + firstNum + secondNum;
-        Integer numPairFrequency = numPairFrequencyMap.get(numPairCacheKey);
+        Double numPairFrequency = numPairFrequencyMap.get(numPairCacheKey);
         if(isNull(numPairFrequency)){
-          return updateNumPairFrequencyMapAndReturnNumPair(numPairFrequencyMap, userId, numPairCacheKey, 1, firstNum, secondNum);
+          return updateNumPairFrequencyMapAndReturnNumPair(numPairFrequencyMap, userId, numPairCacheKey, Double.valueOf(1.0), firstNum, secondNum);
         } else {
-            boolean isEasyMedium = GameDifficulty.MultiplicationTableGame.isEasyMedium(gameDifficulty);
-            boolean isHard = GameDifficulty.MultiplicationTableGame.isHard(gameDifficulty);
+            boolean isEasyMedium = GameDifficulty.MathTableGame.isEasyMedium(gameDifficulty);
+            boolean isHard = GameDifficulty.MathTableGame.isHard(gameDifficulty);
             if(isEasyMedium && numPairFrequency <= NUMPAIR_MAX_FREQUENCY_EASY_MEDIUM) {
                 return updateNumPairFrequencyMapAndReturnNumPair(numPairFrequencyMap, userId, numPairCacheKey, numPairFrequency + 1, firstNum, secondNum);
             } else if (isHard && numPairFrequency <= NUMPAIR_MAX_FREQUENCY_HARD){
@@ -124,33 +123,27 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
     }
 
     private Integer generateRandomZeroToTwelve(){
-        log.info("RANDOM GENERATOR MIN: " + RANDOM_GENERATOR_MIN);
-        log.info("RANDOM GENERATOR MAX: " + RANDOM_GENERATOR_MAX);
-        return new Random()
+        return randomNumGenerator
             .ints(RANDOM_GENERATOR_MIN, RANDOM_GENERATOR_MAX)
             .findFirst()
             .getAsInt();
     }
 
     private AbstractMap.SimpleEntry<Integer, Integer> updateNumPairFrequencyMapAndReturnNumPair(
-            HashMap<String, Integer> numPairFrequencyMap,
+            Map<String, Double> numPairFrequencyMap,
             String userId,
             String numPairCacheKey,
-            Integer newNumPairFrequency,
+            Double newNumPairFrequency,
             Integer firstNum,
             Integer secondNum
-    ){
+    ) throws Exception {
         numPairFrequencyMap.put(numPairCacheKey, newNumPairFrequency);
-//        ConcurrentHashMap<String, HashMap<String, Integer>> numPairFrequencyMapCache = new ConcurrentHashMap<>();
-//        numPairFrequencyMapCache.put(userId + CACHE_NUM_PAIR_FREQUENCY, numPairFrequencyMap);
-        redisTemplate.opsForHash().put(userId, CACHE_NUM_PAIR_FREQUENCY, numPairFrequencyMap.toString());
+        gameCache.putNumPairFrequency(userId, numPairFrequencyMap);
         return new AbstractMap.SimpleEntry<>(firstNum, secondNum);
     }
 
     private boolean isNewGame(GetNextChallengeRequest request){
-        GameStatus.MultiplicationTableGame gameStatus = request.getGameStatus();
-        log.info("##################");
-        log.info(gameStatus.value());
-        return gameStatus.equals(GameStatus.MultiplicationTableGame.NEW);
+        GameStatus.MathTableGame gameStatus = request.getGameStatus();
+        return gameStatus.equals(GameStatus.MathTableGame.NEW);
     }
 }

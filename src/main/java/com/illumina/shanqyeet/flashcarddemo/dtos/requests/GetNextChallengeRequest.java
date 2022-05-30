@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetNextChallengeRequest implements BaseRequest {
     private String userId;
-    private GameStatus.MultiplicationTableGame gameStatus;
-    private GameDifficulty.MultiplicationTableGame gameDifficulty;
+    private GameStatus.MathTableGame gameStatus;
+    private GameDifficulty.MathTableGame gameDifficulty;
 }

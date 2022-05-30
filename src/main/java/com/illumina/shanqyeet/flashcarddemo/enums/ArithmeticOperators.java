@@ -1,11 +1,13 @@
 package com.illumina.shanqyeet.flashcarddemo.enums;
 
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.*;
+
 public enum ArithmeticOperators {
-    MINUS('-'),
-    PLUS('+'),
-    PRODUCT('*'),
-    DIVIDE('/'),
-    MODULUS('%');
+    MINUS(MINUS_CHAR),
+    PLUS(PLUS_CHAR),
+    PRODUCT(MULTIPLY_CHAR),
+    DIVIDE(DIVIDE_CHAR),
+    MODULUS(MODULUS_CHAR);
 
     private Character operator;
 

@@ -1,4 +1,4 @@
-package com.illumina.shanqyeet.flashcarddemo.services.usersession;
+package com.illumina.shanqyeet.flashcarddemo.services.helpers.users;
 
 import com.illumina.shanqyeet.flashcarddemo.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,16 +12,13 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class FlashCardUserDetailsService implements UserDetailsService {
+public class UserDetailsValidator implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("############## INSIDE USER DETAILS SERVICE ###############");
-        log.info(username);
-        log.info(userRepository.findByUsername(username).toString());
         try {
             return userRepository.findByUsername(username);
         } catch (Exception e) {

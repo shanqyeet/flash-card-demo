@@ -10,8 +10,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.GameStatus.SECRET;
-import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.GameStatus.TOKEN_EXPIRY_TIME;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.SECRET;
+import static com.illumina.shanqyeet.flashcarddemo.utils.Constants.TOKEN_EXPIRY_TIME;
+
 
 @Slf4j
 @Component
