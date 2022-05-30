@@ -22,7 +22,7 @@ public interface Constants {
         public static final String SECRET = "FlashCardJWTSecretKey";
         public static final String TOKEN_PREFIX = "Bearer ";
         public static final String HEADER_STRING = "Authorization";
-        public static final Long TOKEN_EXPIRY_TIME = Long.valueOf(3600);
+        public static final Long TOKEN_EXPIRY_TIME = Long.valueOf(3600_000);
 
 
     }
