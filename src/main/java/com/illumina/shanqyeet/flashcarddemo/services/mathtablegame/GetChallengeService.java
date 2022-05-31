@@ -31,15 +31,18 @@ public class GetChallengeService implements BaseService<GetChallengeRequest, Get
 
     @Override
     public GetChallengeResponse execute(GetChallengeRequest request) throws Exception {
+        log.info("REQUEST: " + request.toString());
         UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
         String userId = user.getId().toString();
         GameDifficulty.MathTableGame gameDifficulty = request.getGameDifficulty();
 
-        if(request.isNewGame()){
+        if(request.getIsNewGame()){
+            log.info("IS NEW GAME NOW");
             gameCache.clearCurrentGameData(userId);
             gameCache.putGameScores(userId, new GameScoreCacheObject());
             gameCache.putGameDifficulty(userId, gameDifficulty.name());
         } else {
+            log.info("IS OLD GAME");
             String cachedDifficulty = gameCache.getGameDifficulty(userId);
             gameDifficulty = Optional.ofNullable(GameDifficulty.MathTableGame.fromString(cachedDifficulty))
                     .orElseThrow(() -> new GameSessionNotFoundException("There is no on-going game found, please start new game"));
