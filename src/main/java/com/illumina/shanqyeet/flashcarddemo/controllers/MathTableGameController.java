@@ -9,6 +9,7 @@ import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResultRe
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameStatus;
+import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSesssionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.GetNextChallengeService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.GetValidateOnGoingGameService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostChallengeResultService;
@@ -67,7 +68,7 @@ public class MathTableGameController {
     @PostMapping("/challenge/complete")
     public PostCompleteGameResponse completeChallenge(
             @RequestBody ChallengeResultDto challengeResult
-    ){
+    ) throws GameSesssionNotFoundException {
         return postCompleteGameService.execute();
     }
 }

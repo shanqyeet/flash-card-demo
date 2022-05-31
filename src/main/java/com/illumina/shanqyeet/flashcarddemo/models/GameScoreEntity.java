@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -20,7 +21,7 @@ public class GameScoreEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private long id;
-//    private UUID userId;
+    private UUID userId;
     private Integer score;
     private Integer penalty;
     @Column(name = "average_answer_time")

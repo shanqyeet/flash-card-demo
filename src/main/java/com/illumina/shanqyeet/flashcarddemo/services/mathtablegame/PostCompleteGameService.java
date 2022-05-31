@@ -3,6 +3,7 @@ package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
+import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSesssionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.models.GameScoreEntity;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.repositories.GameScoreRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -24,8 +26,7 @@ public class PostCompleteGameService {
     @Autowired
     private GameScoreRepository gameScoreRepository;
 
-    public PostCompleteGameResponse execute(){
-        try {
+    public PostCompleteGameResponse execute() throws GameSesssionNotFoundException {
             UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
             String userId = user.getId().toString();
 
@@ -33,13 +34,17 @@ public class PostCompleteGameService {
             GameDifficulty.MathTableGame gameDifficulty  = GameDifficulty.MathTableGame
                     .fromString(gameCache.getGameDifficulty(userId));
 
+            if(Objects.isNull(gameScoreCache) || Objects.isNull(gameDifficulty)){
+                throw new GameSesssionNotFoundException("There is no on-going game found, please start new game");
+            }
+
             Integer totalScore = gameScoreCache.getLatestScore();
             Integer totalPenalty = gameScoreCache.getLatestPenalty();
             Long averageAnswerTimeMillis = calculateAverageAnswerTime(totalScore, totalPenalty, gameScoreCache.getTotalAnswerTimeInMillis());
 
             GameScoreEntity newGameScore = GameScoreEntity.builder()
-    //                .userId(UUID.randomUUID())
-                    .gameDifficulty(GameDifficulty.MathTableGame.EASY)
+                    .userId(user.getId())
+                    .gameDifficulty(gameDifficulty)
                     .score(totalScore)
                     .penalty(totalPenalty)
                     .averageAnswerTimeInMillis(averageAnswerTimeMillis)
@@ -55,11 +60,6 @@ public class PostCompleteGameService {
                     .correctAnswerRate(rateOfCorrectAnswer)
                     .totalScore(totalScore)
                     .build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-
     }
 
     public Long calculateAverageAnswerTime(Integer totalScore, Integer totalPenalty, Long totalAnswerTimeInMillis){

@@ -13,5 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetTopHundreScoresResponse {
-    private List<GameScoreEntity> top100Scores;
+    private List<GameScoreEntity> hard;
+    private List<GameScoreEntity> medium;
+    private List<GameScoreEntity> easy;
 }

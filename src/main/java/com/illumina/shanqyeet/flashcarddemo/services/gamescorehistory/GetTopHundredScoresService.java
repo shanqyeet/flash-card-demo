@@ -1,9 +1,9 @@
 package com.illumina.shanqyeet.flashcarddemo.services.gamescorehistory;
 
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetTopHundreScoresResponse;
+import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.models.GameScoreEntity;
 import com.illumina.shanqyeet.flashcarddemo.repositories.GameScoreRepository;
-import com.illumina.shanqyeet.flashcarddemo.utils.GameDifficultyComparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,18 +21,29 @@ public class GetTopHundredScoresService {
     @Autowired
     private GameScoreRepository gameScoreRepository;
     public GetTopHundreScoresResponse execute(){
-        try {
-            List<GameScoreEntity> too100Scores = Optional.ofNullable(gameScoreRepository.findTop100ByOrderByScoreDesc()).orElse(new ArrayList<GameScoreEntity>());
-            too100Scores.stream()
-                    .sorted((score1, score2) -> new GameDifficultyComparator().compare(score1.getGameDifficulty().name(), score2.getGameDifficulty().name()))
-                    .sorted(Comparator.comparing(GameScoreEntity::getAverageAnswerTimeInMillis))
-                    .collect(Collectors.toList());
-            return GetTopHundreScoresResponse.builder()
-                    .top100Scores(too100Scores)
-                    .build();
-        } catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+        List<GameScoreEntity> too100ScoresHard = Optional.ofNullable(gameScoreRepository.findTop100ByGameDifficultyOrderByScoreDesc(GameDifficulty.MathTableGame.HARD)).orElse(new ArrayList<GameScoreEntity>());
+        List<GameScoreEntity> too100ScoresMedium = Optional.ofNullable(gameScoreRepository.findTop100ByGameDifficultyOrderByScoreDesc(GameDifficulty.MathTableGame.MEDIUM)).orElse(new ArrayList<GameScoreEntity>());
+        List<GameScoreEntity> too100ScoresEasy = Optional.ofNullable(gameScoreRepository.findTop100ByGameDifficultyOrderByScoreDesc(GameDifficulty.MathTableGame.EASY)).orElse(new ArrayList<GameScoreEntity>());
+
+        Comparator<GameScoreEntity> scoreComparator = Comparator
+                .comparingInt(GameScoreEntity::getScore).reversed()
+                .thenComparing(GameScoreEntity::getAverageAnswerTimeInMillis)
+                .thenComparing(GameScoreEntity::getPenalty);
+
+        List<GameScoreEntity> too100ScoresHardSorted = too100ScoresHard.stream()
+                .sorted(scoreComparator)
+                .collect(Collectors.toList());
+        List<GameScoreEntity> too100ScoresMediumSorted = too100ScoresMedium.stream()
+                .sorted(scoreComparator)
+                .collect(Collectors.toList());
+        List<GameScoreEntity> too100ScoresEasySorted = too100ScoresEasy.stream()
+                .sorted(scoreComparator)
+                .collect(Collectors.toList());
+
+        return GetTopHundreScoresResponse.builder()
+                .hard(too100ScoresHardSorted)
+                .medium(too100ScoresMediumSorted)
+                .easy(too100ScoresEasySorted)
+                .build();
     }
 }
