@@ -1,11 +1,11 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
-import com.illumina.shanqyeet.flashcarddemo.dtos.requests.GetNextChallengeRequest;
-import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetNextChallengeResponse;
+import com.illumina.shanqyeet.flashcarddemo.dtos.requests.GetChallengeRequest;
+import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetChallengeResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.ArithmeticOperators;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
-import com.illumina.shanqyeet.flashcarddemo.enums.GameStatus;
+import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.services.BaseService;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
@@ -21,7 +21,7 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
-public class GetNextChallengeService implements BaseService<GetNextChallengeRequest, GetNextChallengeResponse> {
+public class GetChallengeService implements BaseService<GetChallengeRequest, GetChallengeResponse> {
 
     @Autowired
     private MathTableGameCache gameCache;
@@ -30,43 +30,35 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
     private Random randomNumGenerator;
 
     @Override
-    public GetNextChallengeResponse execute(GetNextChallengeRequest request) throws Exception {
+    public GetChallengeResponse execute(GetChallengeRequest request) throws Exception {
         UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
         String userId = user.getId().toString();
         GameDifficulty.MathTableGame gameDifficulty = request.getGameDifficulty();
 
-        try {
-            if(isNewGame(request)){
-                gameCache.putGameScores(userId, new GameScoreCacheObject());
-                gameCache.putGameDifficulty(userId, gameDifficulty.name());
-            } else {
-                String cachedDifficulty = gameCache.getGameDifficulty(userId);
-                gameDifficulty = GameDifficulty.MathTableGame.fromString(cachedDifficulty);
-            }
+        if(request.isNewGame()){
+            gameCache.clearCurrentGameData(userId);
+            gameCache.putGameScores(userId, new GameScoreCacheObject());
+            gameCache.putGameDifficulty(userId, gameDifficulty.name());
+        } else {
+            String cachedDifficulty = gameCache.getGameDifficulty(userId);
+            gameDifficulty = Optional.ofNullable(GameDifficulty.MathTableGame.fromString(cachedDifficulty))
+                    .orElseThrow(() -> new GameSessionNotFoundException("There is no on-going game found, please start new game"));
+        }
 
-                Map<String, Double> numPairFrequencyMap = Optional.ofNullable(gameCache.getNumPairFrequency(userId)).orElse(new HashMap<>());
-                log.info("NUM PAIR FREQUENCY MAP");
-                log.info(numPairFrequencyMap.toString());
-                numPairFrequencyMap.forEach((key, value) -> {
-                    log.info("[{} : {}]", key, value);
-                });
-
+        Map<String, Double> numPairFrequencyMap = Optional.ofNullable(gameCache.getNumPairFrequency(userId)).orElse(new HashMap<>());
         AbstractMap.SimpleEntry<Integer, Integer> generatedNumPair = generateNumberPairWithAppearanceFrequencyCheck(numPairFrequencyMap, userId, gameDifficulty.name());
         Character chosenOperator = getRandomOperator(generatedNumPair.getValue(), gameDifficulty);
 
-        return GetNextChallengeResponse.builder()
+        return GetChallengeResponse.builder()
                 .firstNum(generatedNumPair.getKey())
                 .secondNum(generatedNumPair.getValue())
                 .operator(chosenOperator)
                 .result(calculateExpectedResult(generatedNumPair.getKey(), generatedNumPair.getValue(), chosenOperator))
+                .gameDifficult(gameDifficulty.toString())
                 .build();
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
 
-    private Integer calculateExpectedResult(Integer firstNum, Integer secondNum, Character operator) throws Exception {
+    private Integer calculateExpectedResult(Integer firstNum, Integer secondNum, Character operator) {
         Integer result = 0;
         switch(operator) {
             case MINUS_CHAR:
@@ -84,8 +76,6 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
             case MODULUS_CHAR:
                 result = firstNum % secondNum;
                 break;
-            default:
-                throw new Exception("Non allowed arithmetic operator");
         }
         return result;
 
@@ -149,10 +139,5 @@ public class GetNextChallengeService implements BaseService<GetNextChallengeRequ
         numPairFrequencyMap.put(numPairCacheKey, newNumPairFrequency);
         gameCache.putNumPairFrequency(userId, numPairFrequencyMap);
         return new AbstractMap.SimpleEntry<>(firstNum, secondNum);
-    }
-
-    private boolean isNewGame(GetNextChallengeRequest request){
-        GameStatus.MathTableGame gameStatus = request.getGameStatus();
-        return gameStatus.equals(GameStatus.MathTableGame.NEW);
     }
 }

@@ -3,7 +3,7 @@ package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
-import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSesssionNotFoundException;
+import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.models.GameScoreEntity;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.repositories.GameScoreRepository;
@@ -26,7 +26,7 @@ public class PostCompleteGameService {
     @Autowired
     private GameScoreRepository gameScoreRepository;
 
-    public PostCompleteGameResponse execute() throws GameSesssionNotFoundException {
+    public PostCompleteGameResponse execute() throws GameSessionNotFoundException {
             UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
             String userId = user.getId().toString();
 
@@ -35,7 +35,7 @@ public class PostCompleteGameService {
                     .fromString(gameCache.getGameDifficulty(userId));
 
             if(Objects.isNull(gameScoreCache) || Objects.isNull(gameDifficulty)){
-                throw new GameSesssionNotFoundException();
+                throw new GameSessionNotFoundException("There is no on-going game found, please start new game");
             }
 
             Integer totalScore = gameScoreCache.getLatestScore();

@@ -3,7 +3,7 @@ package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
-import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSesssionNotFoundException;
+import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.repositories.GameScoreRepository;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
@@ -53,7 +53,7 @@ class PostCompleteGameServiceTest {
     }
 
     @Test
-    public void whenSuccessSavingOfResult() throws GameSesssionNotFoundException {
+    public void whenSuccessSavingOfResult() throws GameSessionNotFoundException {
         // GIVEN
         GameScoreCacheObject gameScores = GameScoreCacheObject.builder()
                 .latestScore(100)
@@ -79,8 +79,8 @@ class PostCompleteGameServiceTest {
     }
 
     @Test
-    public void whenNoGameInSessionThrowException() throws GameSesssionNotFoundException {
-        Exception exception = Assertions.assertThrows(GameSesssionNotFoundException.class, () -> {
+    public void whenNoGameInSessionThrowException() throws GameSessionNotFoundException{
+        Exception exception = Assertions.assertThrows(GameSessionNotFoundException.class, () -> {
             postCompleteGameServiceMock.execute();
         });
 

@@ -12,7 +12,7 @@ import javax.validation.constraints.Min;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetNextChallengeResponse implements BaseResponse {
+public class GetChallengeResponse implements BaseResponse {
 
     @Min(value = 0)
     @Max(value = 12)
@@ -23,4 +23,5 @@ public class GetNextChallengeResponse implements BaseResponse {
     private Integer secondNum;
     private Integer result;
     private Character operator;
+    private String gameDifficult;
 }
