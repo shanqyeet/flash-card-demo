@@ -9,6 +9,7 @@ import com.illumina.shanqyeet.flashcarddemo.repositories.GameScoreRepository;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,18 +36,21 @@ class PostCompleteGameServiceTest {
     @Mock
     private GameScoreRepository gameScoreRepositoryMock;
     @Mock
-    private SecurityContextHolder securityContextHolderMock;
-    @Mock
     private SecurityContext securityContextMock;
-    @Mock
-    private SecurityContext securityContext;
     @Mock
     private Authentication authentication;
 
 
-    static UserEntity user = UserEntity.builder()
+    UserEntity user = UserEntity.builder()
             .id(UUID.randomUUID())
             .build();
+
+    @BeforeEach
+    public void setup(){
+        Mockito.when(securityContextMock.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContextMock);
+        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(user);
+    }
 
     @Test
     public void whenSuccessSavingOfResult() throws GameSesssionNotFoundException {
@@ -60,9 +64,6 @@ class PostCompleteGameServiceTest {
         // WHEN
         Mockito.when(gameCacheMock.getGameScores(any())).thenReturn(gameScores);
         Mockito.when(gameCacheMock.getGameDifficulty(any())).thenReturn(GameDifficulty.MathTableGame.EASY.name());
-        Mockito.when(securityContextMock.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContextMock);
-        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(user);
 
         // THEN
         PostCompleteGameResponse response = postCompleteGameServiceMock.execute();

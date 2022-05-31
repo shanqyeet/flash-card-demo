@@ -17,19 +17,14 @@ public class GetValidateOnGoingGameService {
     @Autowired
     private MathTableGameCache gameCache;
 
-    public GetValidateOnGoingGameResponse execute(){
+    public GetValidateOnGoingGameResponse execute() {
         UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
-        try {
-            GameScoreCacheObject gameScore = gameCache.getGameScores(user.getId().toString());
-            if (Objects.nonNull(gameScore)) {
-                if (gameScore.getLatestPenalty() > 0 || gameScore.getLatestScore() > 0) {
-                    return GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.TRUE).build();
-                }
+        GameScoreCacheObject gameScore = gameCache.getGameScores(user.getId().toString());
+        if (Objects.nonNull(gameScore)) {
+            if (gameScore.getLatestPenalty() > 0 || gameScore.getLatestScore() > 0) {
+                return GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.TRUE).build();
             }
-            return  GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.FALSE).build();
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw e;
         }
+        return  GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.FALSE).build();
     }
 }

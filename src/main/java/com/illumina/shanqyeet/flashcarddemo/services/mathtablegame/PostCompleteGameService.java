@@ -35,7 +35,7 @@ public class PostCompleteGameService {
                     .fromString(gameCache.getGameDifficulty(userId));
 
             if(Objects.isNull(gameScoreCache) || Objects.isNull(gameDifficulty)){
-                throw new GameSesssionNotFoundException("There is no on-going game found, please start new game");
+                throw new GameSesssionNotFoundException();
             }
 
             Integer totalScore = gameScoreCache.getLatestScore();
