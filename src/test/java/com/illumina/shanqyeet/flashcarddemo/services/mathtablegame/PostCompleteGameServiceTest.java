@@ -88,6 +88,4 @@ class PostCompleteGameServiceTest {
         String exceptionMessage = exception.getMessage();
         Assertions.assertEquals(expectedMessage, exceptionMessage);
     }
-
-
 }

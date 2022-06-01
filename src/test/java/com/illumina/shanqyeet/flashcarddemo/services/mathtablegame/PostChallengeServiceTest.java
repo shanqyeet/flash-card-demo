@@ -1,8 +1,8 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
 
-import com.illumina.shanqyeet.flashcarddemo.dtos.requests.GetChallengeRequest;
-import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetChallengeResponse;
+import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeRequest;
+import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResponse;
 import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
@@ -31,10 +31,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class GetChallengeServiceTest {
+class PostChallengeServiceTest {
 
     @InjectMocks
-    private GetChallengeService getChallengeServiceMock;
+    private PostChallengeService getChallengeServiceMock;
     @Mock
     private MathTableGameCache gameCacheMock;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -70,13 +70,13 @@ class GetChallengeServiceTest {
     public void whenSuccessGettingNewChallenge() throws Exception {
         //GIVEN
         mockSetupForNonExceptionCase();
-        GetChallengeRequest request = GetChallengeRequest.builder()
+        PostChallengeRequest request = PostChallengeRequest.builder()
                 .gameDifficulty(EASY)
                 .isNewGame(true)
                 .build();
 
         //THEN
-        GetChallengeResponse response = getChallengeServiceMock.execute(request);
+        PostChallengeResponse response = getChallengeServiceMock.execute(request);
         Assertions.assertNotNull(response.getFirstNum());
         Assertions.assertNotNull(response.getSecondNum());
         Assertions.assertNotNull(response.getResult());
@@ -95,12 +95,12 @@ class GetChallengeServiceTest {
         //GIVEN
         mockSetupForNonExceptionCase();
         Mockito.when(gameCacheMock.getGameDifficulty(any())).thenReturn(EASY.name());
-        GetChallengeRequest request = GetChallengeRequest.builder()
+        PostChallengeRequest request = PostChallengeRequest.builder()
                 .isNewGame(false)
                 .build();
 
         //THEN
-        GetChallengeResponse response = getChallengeServiceMock.execute(request);
+        PostChallengeResponse response = getChallengeServiceMock.execute(request);
         Assertions.assertNotNull(response.getFirstNum());
         Assertions.assertNotNull(response.getSecondNum());
         Assertions.assertNotNull(response.getResult());
@@ -118,13 +118,13 @@ class GetChallengeServiceTest {
         //GIVEN
         mockSetupForNonExceptionCase();
         Mockito.when(gameCacheMock.getGameDifficulty(any())).thenReturn(EASY.name());
-        GetChallengeRequest request = GetChallengeRequest.builder()
+        PostChallengeRequest request = PostChallengeRequest.builder()
                 .isNewGame(false)
                 .gameDifficulty(HARD)
                 .build();
 
         //THEN
-        GetChallengeResponse response = getChallengeServiceMock.execute(request);
+        PostChallengeResponse response = getChallengeServiceMock.execute(request);
         Assertions.assertNotNull(response.getFirstNum());
         Assertions.assertNotNull(response.getSecondNum());
         Assertions.assertNotNull(response.getResult());
@@ -141,7 +141,7 @@ class GetChallengeServiceTest {
     @Test
     public void whenOnGoingGameFoundNoGameDifficultyRecord() {
         //GIVEN
-        GetChallengeRequest request = GetChallengeRequest.builder()
+        PostChallengeRequest request = PostChallengeRequest.builder()
                 .isNewGame(false)
                 .build();
         Exception exception = Assertions.assertThrows(GameSessionNotFoundException.class, () -> {

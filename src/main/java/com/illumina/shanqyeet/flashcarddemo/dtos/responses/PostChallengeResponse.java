@@ -12,7 +12,7 @@ import javax.validation.constraints.Min;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetChallengeResponse implements BaseResponse {
+public class PostChallengeResponse implements BaseResponse {
 
     @Min(value = 0)
     @Max(value = 12)

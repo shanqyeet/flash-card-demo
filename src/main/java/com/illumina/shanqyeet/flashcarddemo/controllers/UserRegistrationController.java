@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
 @RestController
@@ -28,7 +30,7 @@ public class UserRegistrationController {
     }
 
     @PostMapping("/new")
-    public PostNewUserResponse registerNewUser(@RequestBody PostNewUserRequest request) throws Exception {
+    public PostNewUserResponse registerNewUser(@Valid @RequestBody PostNewUserRequest request) throws Exception {
         return postNewUserService.execute(request);
     }
 

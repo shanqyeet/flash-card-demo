@@ -1,12 +1,12 @@
 package com.illumina.shanqyeet.flashcarddemo.controllers;
 
 import com.google.gson.Gson;
-import com.illumina.shanqyeet.flashcarddemo.dtos.requests.GetChallengeRequest;
+import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeResultRequest;
 import com.illumina.shanqyeet.flashcarddemo.security.JwtAuthenticationEntryPoint;
 import com.illumina.shanqyeet.flashcarddemo.security.JwtTokenProvider;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.UserDetailsValidator;
-import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.GetChallengeService;
+import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostChallengeService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.GetValidateOnGoingGameService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostChallengeResultService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostCompleteGameService;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MathTableGameControllerTest {
 
     @MockBean
-    private GetChallengeService getChallengeServiceMock;
+    private PostChallengeService getChallengeServiceMock;
 
     @MockBean
     private GetValidateOnGoingGameService getValidateOnGoingGameServiceMock;
@@ -65,7 +65,7 @@ class MathTableGameControllerTest {
 
     @Test
     public void retrieveNextChallengeSuccess() throws Exception {
-       GetChallengeRequest request = GetChallengeRequest.builder()
+       PostChallengeRequest request = PostChallengeRequest.builder()
                .isNewGame(true)
                .gameDifficulty(EASY)
                .build();

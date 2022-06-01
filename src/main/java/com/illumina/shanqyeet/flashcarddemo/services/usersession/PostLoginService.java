@@ -22,7 +22,6 @@ public class PostLoginService {
     private AuthenticationManager authenticationManager;
 
     public PostLoginResponse execute(PostLoginRequest request){
-        log.info("#### LOGGING USER: {} #######", request);
         String username = request.getUsername();
         String password = request.getPassword();
 
@@ -30,11 +29,11 @@ public class PostLoginService {
 
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            log.info("AUTHENTICATION: {]", authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String jwt = TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
             return PostLoginResponse.builder()
+                    .username(username)
                     .success(true)
                     .token(jwt)
                     .build();

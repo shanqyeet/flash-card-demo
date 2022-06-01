@@ -1,6 +1,5 @@
 package com.illumina.shanqyeet.flashcarddemo.dtos.responses;
 
-import com.illumina.shanqyeet.flashcarddemo.models.GameScoreEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetTopHundreScoresResponse {
-    private List<GameScoreEntity> hard;
-    private List<GameScoreEntity> medium;
-    private List<GameScoreEntity> easy;
+    private List<TopScoresDto> hard;
+    private List<TopScoresDto> medium;
+    private List<TopScoresDto> easy;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TopScoresDto {
+        private long id;
+        private String username;
+        private Integer score;
+        private Integer penalty;
+        private Long averageAnswerTimeInMillis;
+    }
 }

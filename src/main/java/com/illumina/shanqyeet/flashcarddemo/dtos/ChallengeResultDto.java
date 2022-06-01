@@ -8,5 +8,4 @@ import java.io.Serializable;
 public class ChallengeResultDto implements Serializable {
     private boolean isChallengePassed;
     private Long answerTimeInMillis;
-
 }

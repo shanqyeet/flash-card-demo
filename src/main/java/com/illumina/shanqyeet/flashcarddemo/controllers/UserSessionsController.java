@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
 @RestController
@@ -17,7 +19,7 @@ public class UserSessionsController {
     private PostLoginService postLoginService;
 
     @PostMapping("/new")
-    public PostLoginResponse login(@RequestBody PostLoginRequest request){
+    public PostLoginResponse login(@Valid @RequestBody PostLoginRequest request){
         return postLoginService.execute(request);
     }
 }

@@ -1,14 +1,14 @@
 package com.illumina.shanqyeet.flashcarddemo.controllers;
 
 import com.illumina.shanqyeet.flashcarddemo.dtos.ChallengeResultDto;
-import com.illumina.shanqyeet.flashcarddemo.dtos.requests.GetChallengeRequest;
+import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeResultRequest;
-import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetChallengeResponse;
+import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResponse;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetValidateOnGoingGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResultResponse;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
-import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.GetChallengeService;
+import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostChallengeService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.GetValidateOnGoingGameService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostChallengeResultService;
 import com.illumina.shanqyeet.flashcarddemo.services.mathtablegame.PostCompleteGameService;
@@ -27,7 +27,7 @@ public class MathTableGameController {
     @Autowired
     private GetValidateOnGoingGameService getValidateOnGoingGameService;
     @Autowired
-    private GetChallengeService getNextChallengeService;
+    private PostChallengeService getNextChallengeService;
     @Autowired
     private PostChallengeResultService postChallengeResultService;
     @Autowired
@@ -40,7 +40,7 @@ public class MathTableGameController {
     }
 
     @PostMapping("/challenge/new")
-    public GetChallengeResponse retrieveChallenge(@Valid @RequestBody GetChallengeRequest request) throws Exception {
+    public PostChallengeResponse retrieveChallenge(@Valid @RequestBody PostChallengeRequest request) throws Exception {
         return getNextChallengeService.execute(request);
     }
 
@@ -48,6 +48,8 @@ public class MathTableGameController {
     public PostChallengeResultResponse updateChallengeResult(
             @RequestBody ChallengeResultDto challengeResult
     ) throws Exception {
+        log.info("CHALLENGE RESULT");
+        log.info(challengeResult.toString());
         PostChallengeResultRequest request = PostChallengeResultRequest.builder()
                 .isPassed(challengeResult.isChallengePassed())
                 .answerTimeInMillis(challengeResult.getAnswerTimeInMillis())

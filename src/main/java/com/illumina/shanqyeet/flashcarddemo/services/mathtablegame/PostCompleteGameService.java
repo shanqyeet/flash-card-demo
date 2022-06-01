@@ -44,6 +44,7 @@ public class PostCompleteGameService {
 
             GameScoreEntity newGameScore = GameScoreEntity.builder()
                     .userId(user.getId())
+                    .username(user.getUsername())
                     .gameDifficulty(gameDifficulty)
                     .score(totalScore)
                     .penalty(totalPenalty)
@@ -51,7 +52,11 @@ public class PostCompleteGameService {
                     .createdAt(LocalDateTime.now())
                     .build();
 
-            gameScoreRepository.save(newGameScore);
+            try {
+                gameScoreRepository.save(newGameScore);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             gameCache.clearCurrentGameData(userId);
 
             Double rateOfCorrectAnswer = Double.valueOf(totalScore/(totalScore+totalPenalty));

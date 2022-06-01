@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetChallengeRequest implements BaseRequest {
+public class PostChallengeRequest implements BaseRequest {
     @NotNull
     @JsonProperty("isNewGame")
     private Boolean isNewGame;

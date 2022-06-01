@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty.MathTableGame.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,8 +32,11 @@ class GetTopHundredScoresServiceTest {
     @Test
     public void whenGameScoresAreReturnedCorrectOrder(){
         // GIVEN
+        UUID userId = UUID.randomUUID();
         GameScoreEntity gameScore1 = GameScoreEntity.builder()
                 .id(Long.valueOf(1))
+                .username("tester001")
+                .userId(userId)
                 .score(180)
                 .gameDifficulty(GameDifficulty.MathTableGame.MEDIUM)
                 .averageAnswerTimeInMillis(Long.valueOf(50000))
@@ -42,6 +46,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore2 = GameScoreEntity.builder()
                 .id(Long.valueOf(2))
+                .username("tester001")
+                .userId(userId)
                 .score(100)
                 .gameDifficulty(GameDifficulty.MathTableGame.MEDIUM)
                 .averageAnswerTimeInMillis(Long.valueOf(30000))
@@ -51,6 +57,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore3 = GameScoreEntity.builder()
                 .id(Long.valueOf(3))
+                .username("tester001")
+                .userId(userId)
                 .score(180)
                 .gameDifficulty(HARD)
                 .averageAnswerTimeInMillis(Long.valueOf(30000))
@@ -60,6 +68,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore4 = GameScoreEntity.builder()
                 .id(Long.valueOf(4))
+                .username("tester001")
+                .userId(userId)
                 .score(120)
                 .gameDifficulty(HARD)
                 .averageAnswerTimeInMillis(Long.valueOf(41000))
@@ -69,6 +79,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore5 = GameScoreEntity.builder()
                 .id(Long.valueOf(5))
+                .username("tester001")
+                .userId(userId)
                 .score(110)
                 .gameDifficulty(GameDifficulty.MathTableGame.EASY)
                 .averageAnswerTimeInMillis(Long.valueOf(30000))
@@ -78,6 +90,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore6 = GameScoreEntity.builder()
                 .id(Long.valueOf(6))
+                .username("tester001")
+                .userId(userId)
                 .score(112)
                 .gameDifficulty(GameDifficulty.MathTableGame.EASY)
                 .averageAnswerTimeInMillis(Long.valueOf(30000))
@@ -87,6 +101,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore7 = GameScoreEntity.builder()
                 .id(Long.valueOf(7))
+                .username("tester001")
+                .userId(userId)
                 .score(180)
                 .gameDifficulty(HARD)
                 .averageAnswerTimeInMillis(Long.valueOf(10000))
@@ -96,6 +112,8 @@ class GetTopHundredScoresServiceTest {
 
         GameScoreEntity gameScore8 = GameScoreEntity.builder()
                 .id(Long.valueOf(8))
+                .username("tester001")
+                .userId(userId)
                 .score(112)
                 .gameDifficulty(GameDifficulty.MathTableGame.EASY)
                 .averageAnswerTimeInMillis(Long.valueOf(30000))

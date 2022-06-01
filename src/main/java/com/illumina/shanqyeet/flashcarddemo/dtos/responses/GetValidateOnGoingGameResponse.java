@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetValidateOnGoingGameResponse implements BaseResponse {
-    @JsonProperty(value = "hasOngGoingGame")
+    @JsonProperty(value = "hasOnGoingGame")
     private boolean hasOnGoingGame;
 }

@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
@@ -27,18 +26,15 @@ public class UserEntity implements UserDetails {
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
     private UUID id;
-    @Column(unique = true)
-    @NotBlank(message = "username is required")
+    @Column(unique = true, nullable = false)
     private String username;
-    @NotBlank(message = "Password field is required")
+    @Column(nullable = false)
     private String password;
     @Transient
     private String confirmPassword;
-    @NotBlank
+    @Column(nullable = false)
     private String avatarUrl;
-//    private LocalDate birthDate;
     private LocalDateTime createdAt;
-//    private List<GameScore> gameScores;
 
     @PrePersist
     protected void onCreate(){ this.createdAt = LocalDateTime.now();}

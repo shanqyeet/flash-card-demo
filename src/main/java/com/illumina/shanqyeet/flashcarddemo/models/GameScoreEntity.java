@@ -22,6 +22,7 @@ public class GameScoreEntity {
 
     private long id;
     private UUID userId;
+    private String username;
     private Integer score;
     private Integer penalty;
     @Column(name = "average_answer_time")
