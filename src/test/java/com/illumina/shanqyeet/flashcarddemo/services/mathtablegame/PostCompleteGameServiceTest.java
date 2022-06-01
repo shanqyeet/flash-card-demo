@@ -71,7 +71,7 @@ class PostCompleteGameServiceTest {
         Assert.notNull(response.getAverageAnswerTime());
         Assert.notNull(response.getCorrectAnswerRate());
         Assert.notNull(response.getTotalScore());
-        Assertions.assertEquals(1.0, response.getCorrectAnswerRate());
+        Assertions.assertEquals(1, response.getCorrectAnswerRate());
         Assertions.assertEquals(100, response.getTotalScore());
         Assertions.assertEquals(Long.valueOf(40000), response.getAverageAnswerTime());
         Mockito.verify(gameScoreRepositoryMock, Mockito.times(1)).save(any());

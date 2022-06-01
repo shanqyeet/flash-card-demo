@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostCompleteGameResponse implements BaseResponse{
     private Integer totalScore;
-    private Double correctAnswerRate;
+    private Float correctAnswerRate;
     private Long averageAnswerTime;
 }

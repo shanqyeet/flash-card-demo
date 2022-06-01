@@ -59,7 +59,13 @@ public class PostCompleteGameService {
             }
             gameCache.clearCurrentGameData(userId);
 
-            Double rateOfCorrectAnswer = Double.valueOf(totalScore/(totalScore+totalPenalty));
+            float rateOfCorrectAnswer = (float) totalScore/(totalScore+totalPenalty);
+
+            log.info("PASSING RATE: " + totalScore);
+            log.info("PASSING RATE: " + totalScore+totalPenalty);
+            log.info("PASSING RATE: " + Double.valueOf(totalScore)/Double.valueOf(totalScore + totalPenalty));
+            log.info("PASSING RATE: " + rateOfCorrectAnswer);
+
             return PostCompleteGameResponse.builder()
                     .averageAnswerTime(averageAnswerTimeMillis)
                     .correctAnswerRate(rateOfCorrectAnswer)

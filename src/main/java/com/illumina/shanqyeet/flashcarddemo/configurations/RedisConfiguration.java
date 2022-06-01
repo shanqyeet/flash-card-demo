@@ -9,10 +9,19 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import redis.embedded.RedisServer;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 @Configuration
 @EnableRedisRepositories
 public class RedisConfiguration {
+    private RedisServer redisServer;
+
+    public RedisConfiguration(RedisProperties redisProperties) {
+        this.redisServer = new RedisServer(redisProperties.getRedisPort());
+    }
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(
@@ -31,6 +40,18 @@ public class RedisConfiguration {
         template.setValueSerializer(new JdkSerializationRedisSerializer());
         template.setConnectionFactory(connectionFactory);
         return template;
+    }
+
+
+
+    @PostConstruct
+    public void postConstruct() {
+        redisServer.start();
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        redisServer.stop();
     }
 }
 
