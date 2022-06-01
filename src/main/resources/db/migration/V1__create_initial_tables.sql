@@ -16,7 +16,7 @@ CREATE TABLE game_scores (
     penalty integer NOT NULL,
     average_answer_time integer NOT NULL,
     game_difficulty VARCHAR(6) NOT NULL,
-    created_at DATETIME NOT NULL
+    created_at DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 CREATE INDEX game_scores_idx on game_scores(score, penalty, average_answer_time , game_difficulty);
