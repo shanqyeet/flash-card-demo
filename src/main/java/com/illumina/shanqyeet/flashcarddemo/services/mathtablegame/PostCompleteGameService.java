@@ -1,6 +1,6 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
@@ -30,7 +30,7 @@ public class PostCompleteGameService {
             UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
             String userId = user.getId().toString();
 
-            GameScoreCacheObject gameScoreCache = gameCache.getGameScores(userId);
+            GameScoreCacheDto gameScoreCache = gameCache.getGameScores(userId);
             GameDifficulty.MathTableGame gameDifficulty  = GameDifficulty.MathTableGame
                     .fromString(gameCache.getGameDifficulty(userId));
 

@@ -1,6 +1,6 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetValidateOnGoingGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
@@ -47,7 +47,7 @@ class GetValidateOnGoingGameServiceTest {
 
     @Test
     public void whenThereIsOnGoingGameSession() {
-        GameScoreCacheObject gameScore = GameScoreCacheObject.builder()
+        GameScoreCacheDto gameScore = GameScoreCacheDto.builder()
                 .latestScore(1)
                 .totalAnswerTimeInMillis(Long.valueOf(20000))
                 .latestPenalty(0)
@@ -60,7 +60,7 @@ class GetValidateOnGoingGameServiceTest {
 
     @Test
     public void whenThereIsNoOnGoingGameSessionWithNonNullGameScoreContainingZeroScores(){
-        GameScoreCacheObject gameScore = GameScoreCacheObject.builder()
+        GameScoreCacheDto gameScore = GameScoreCacheDto.builder()
                 .latestScore(0)
                 .totalAnswerTimeInMillis(Long.valueOf(20000))
                 .latestPenalty(0)

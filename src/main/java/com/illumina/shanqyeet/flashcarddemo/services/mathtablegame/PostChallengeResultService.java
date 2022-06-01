@@ -1,11 +1,10 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeResultRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResultResponse;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
-import com.illumina.shanqyeet.flashcarddemo.services.BaseService;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.JwtUserDetailsExtractor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,17 +17,16 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class PostChallengeResultService implements BaseService<PostChallengeResultRequest, PostChallengeResultResponse> {
+public class PostChallengeResultService {
 
     @Autowired
     private MathTableGameCache gameCache;
 
-    @Override
     public PostChallengeResultResponse execute(PostChallengeResultRequest request) throws JsonProcessingException {
         UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
         String userId = user.getId().toString();
-        GameScoreCacheObject gameScoreCache = Optional.ofNullable(gameCache.getGameScores(userId))
-                .orElse(new GameScoreCacheObject());
+        GameScoreCacheDto gameScoreCache = Optional.ofNullable(gameCache.getGameScores(userId))
+                .orElse(new GameScoreCacheDto());
         Integer currentLatestScore = 0;
         Integer currentLatestPenalty = 0;
         Long currentTotalAnswerTime = Long.valueOf(0);

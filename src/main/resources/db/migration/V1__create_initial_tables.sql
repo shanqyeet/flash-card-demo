@@ -10,12 +10,13 @@ CREATE INDEX users_username_idx on users(username);
 
 CREATE TABLE game_scores (
     id BIGINT NOT NULL PRIMARY KEY auto_increment,
---    user_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    username varchar(256) NOT NULL,
     score integer NOT NULL,
     penalty integer NOT NULL,
     average_answer_time integer NOT NULL,
     game_difficulty VARCHAR(6) NOT NULL,
     created_at DATETIME NOT NULL
---    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 CREATE INDEX game_scores_idx on game_scores(score, penalty, average_answer_time , game_difficulty);

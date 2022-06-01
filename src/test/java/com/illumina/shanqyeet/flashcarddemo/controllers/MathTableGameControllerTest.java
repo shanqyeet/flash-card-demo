@@ -70,7 +70,7 @@ class MathTableGameControllerTest {
                .gameDifficulty(EASY)
                .build();
 
-        mockMvc.perform(post("/math/challenge/new")
+        mockMvc.perform(post("/math/challenge/new/test")
                        .content(gson.toJson(request))
                        .contentType(MediaType.APPLICATION_JSON)
                ).andExpect(status().isOk());

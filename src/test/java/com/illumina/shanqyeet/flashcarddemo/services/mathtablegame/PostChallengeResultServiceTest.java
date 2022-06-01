@@ -1,7 +1,7 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeResultRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResultResponse;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
@@ -86,7 +86,7 @@ class PostChallengeResultServiceTest {
                 .answerTimeInMillis(Long.valueOf(10000))
                 .build();
 
-        GameScoreCacheObject gameScore = GameScoreCacheObject.builder()
+        GameScoreCacheDto gameScore = GameScoreCacheDto.builder()
                 .latestScore(10)
                 .latestPenalty(0)
                 .totalAnswerTimeInMillis(Long.valueOf(50000))

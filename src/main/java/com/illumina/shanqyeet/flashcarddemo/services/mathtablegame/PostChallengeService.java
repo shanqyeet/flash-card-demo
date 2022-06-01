@@ -1,13 +1,12 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.requests.PostChallengeRequest;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostChallengeResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.ArithmeticOperators;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
-import com.illumina.shanqyeet.flashcarddemo.services.BaseService;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.users.JwtUserDetailsExtractor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
-public class PostChallengeService implements BaseService<PostChallengeRequest, PostChallengeResponse> {
+public class PostChallengeService {
 
     @Autowired
     private MathTableGameCache gameCache;
@@ -29,7 +28,6 @@ public class PostChallengeService implements BaseService<PostChallengeRequest, P
     @Autowired
     private Random randomNumGenerator;
 
-    @Override
     public PostChallengeResponse execute(PostChallengeRequest request) throws Exception {
         try {
 
@@ -41,7 +39,7 @@ public class PostChallengeService implements BaseService<PostChallengeRequest, P
             if (request.getIsNewGame()) {
                 log.info("IS NEW GAME NOW");
                 gameCache.clearCurrentGameData(userId);
-                gameCache.putGameScores(userId, new GameScoreCacheObject());
+                gameCache.putGameScores(userId, new GameScoreCacheDto());
                 gameCache.putGameDifficulty(userId, gameDifficulty.name());
             } else {
                 log.info("IS OLD GAME");

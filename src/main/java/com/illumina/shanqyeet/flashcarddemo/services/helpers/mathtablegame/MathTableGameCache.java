@@ -2,7 +2,7 @@ package com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,8 +22,8 @@ public class MathTableGameCache {
     @Autowired
     Gson gson;
 
-    public GameScoreCacheObject getGameScores(String userId) {
-        GameScoreCacheObject data = gson.fromJson(redisTemplate.opsForValue().get(userId + CACHE_GAME_SESSION), GameScoreCacheObject.class);
+    public GameScoreCacheDto getGameScores(String userId) {
+        GameScoreCacheDto data = gson.fromJson(redisTemplate.opsForValue().get(userId + CACHE_GAME_SESSION), GameScoreCacheDto.class);
         log.info("GAME SCORE DATA: {}", data);
         return data;
     }
@@ -40,7 +40,7 @@ public class MathTableGameCache {
         return data;
     }
 
-    public void putGameScores(String userId, GameScoreCacheObject data) throws JsonProcessingException {
+    public void putGameScores(String userId, GameScoreCacheDto data) throws JsonProcessingException {
         redisTemplate.opsForValue().set(userId + CACHE_GAME_SESSION, gson.toJson(data));
     }
 

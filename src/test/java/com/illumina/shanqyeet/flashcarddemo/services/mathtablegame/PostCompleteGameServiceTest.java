@@ -1,6 +1,6 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.PostCompleteGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.enums.GameDifficulty;
 import com.illumina.shanqyeet.flashcarddemo.exceptions.GameSessionNotFoundException;
@@ -55,7 +55,7 @@ class PostCompleteGameServiceTest {
     @Test
     public void whenSuccessSavingOfResult() throws GameSessionNotFoundException {
         // GIVEN
-        GameScoreCacheObject gameScores = GameScoreCacheObject.builder()
+        GameScoreCacheDto gameScores = GameScoreCacheDto.builder()
                 .latestScore(100)
                 .latestPenalty(0)
                 .totalAnswerTimeInMillis(Long.valueOf(4000000))

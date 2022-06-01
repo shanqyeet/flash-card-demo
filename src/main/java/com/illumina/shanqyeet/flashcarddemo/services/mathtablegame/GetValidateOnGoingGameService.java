@@ -1,6 +1,6 @@
 package com.illumina.shanqyeet.flashcarddemo.services.mathtablegame;
 
-import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheObject;
+import com.illumina.shanqyeet.flashcarddemo.dtos.GameScoreCacheDto;
 import com.illumina.shanqyeet.flashcarddemo.dtos.responses.GetValidateOnGoingGameResponse;
 import com.illumina.shanqyeet.flashcarddemo.models.UserEntity;
 import com.illumina.shanqyeet.flashcarddemo.services.helpers.mathtablegame.MathTableGameCache;
@@ -19,7 +19,7 @@ public class GetValidateOnGoingGameService {
 
     public GetValidateOnGoingGameResponse execute() {
         UserEntity user = JwtUserDetailsExtractor.getUserFromContext();
-        GameScoreCacheObject gameScore = gameCache.getGameScores(user.getId().toString());
+        GameScoreCacheDto gameScore = gameCache.getGameScores(user.getId().toString());
         if (Objects.nonNull(gameScore)) {
             if (gameScore.getLatestPenalty() > 0 || gameScore.getLatestScore() > 0) {
                 return GetValidateOnGoingGameResponse.builder().hasOnGoingGame(Boolean.TRUE).build();

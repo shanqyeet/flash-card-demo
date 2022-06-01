@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler({ResourceNotFoundException.class, GameSessionNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public @ResponseBody ExceptionResponse handleResourceNotFound(
             final ResourceNotFoundException exception,

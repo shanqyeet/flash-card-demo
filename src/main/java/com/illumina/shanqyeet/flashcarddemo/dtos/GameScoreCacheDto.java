@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GameScoreCacheObject implements Serializable {
+public class GameScoreCacheDto implements Serializable {
     private Integer latestScore = 0;
     private Integer latestPenalty = 0;
     private Long totalAnswerTimeInMillis = Long.valueOf(0);
